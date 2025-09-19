@@ -14,6 +14,8 @@ class Sum2Server(Node):
         self, request: AddTwoInts.Request, response: AddTwoInts.Response
     ) -> AddTwoInts.Response:
         """sum two integers"""
+        self.get_logger().info(f"got: {request.a} + {request.b}")
+
         response.sum = request.a + request.b
         self.get_logger().info(f"sum: {request.a} + {request.b} = {response.sum}")
         return response
