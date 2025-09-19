@@ -26,6 +26,7 @@ setup(
             "number_pub = sandbox.number_publisher:main",
             "number_counter = sandbox.number_counter:main",
             "sum2_server = sandbox.sum2_server:main",
+            "sum2_client = sandbox.sum2_client:main",
         ],
     },
 )
