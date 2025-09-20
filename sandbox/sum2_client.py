@@ -1,8 +1,8 @@
-from typing import Optional
 import rclpy
 from rclpy.node import Node
 from rclpy.task import Future
 from example_interfaces.srv import AddTwoInts
+import argparse
 
 
 class Sum2Client(Node):
@@ -47,11 +47,21 @@ class Sum2Client(Node):
 
 
 def main(args: list[str] | None = None):
-    rclpy.init(args=args)
+    # get cli args
+    parser = argparse.ArgumentParser(
+        usage="ros2 run sandbox sum2_client -- a b",
+        description="add two integers by calling the /sum2ints ros2 service",
+    )
+    parser.add_argument("a", type=int, help="first integer ")
+    parser.add_argument("b", type=int, help="second integer")
+    cli, _ = parser.parse_known_args()
 
+    # node
+    rclpy.init(args=args)
     node = Sum2Client()
 
-    fut = node.sum(5, 7)
+    fut = node.sum(cli.a, cli.b)
+
     rclpy.spin_until_future_complete(node, fut)
 
     response = fut.result()
