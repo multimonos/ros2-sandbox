@@ -1,3 +1,4 @@
+from example_interfaces.srv import SetBool
 import rclpy
 from rclpy.node import Node
 from example_interfaces.msg import Int64
@@ -20,9 +21,9 @@ class NumberCounter(Node):
             Int64, NUMBER_TOPIC, self.on_number, self.queue_size
         )
 
-        self.publisher = self.create_publisher(
-            Int64, NUMBER_COUNT_TOPIC, self.queue_size
-        )
+        self.publisher = self.create_publisher(Int64, NUMBER_COUNT_TOPIC, self.queue_size)
+
+        self.reset_svc = self.create_service(SetBool, "number_counter_reset", self.on_reset)
 
     def on_number(self, msg: Int64):
         """consume a number from /number"""
@@ -35,6 +36,16 @@ class NumberCounter(Node):
         acc = Int64()
         acc.data = cnt
         self.publisher.publish(acc)
+
+    def on_reset(self, request: SetBool.Request, response: SetBool.Response) -> SetBool.Response:
+        """reset number counter service"""
+        self.get_logger().info(f"reset: {request.data}")
+
+        if request.data:
+            self.count = 0
+
+        response.success = request.data
+        return response
 
 
 def main(args: list[str] | None = None):
